@@ -1,0 +1,20 @@
+extends layout
+block content
+    #navBar
+        ul
+            li: a(href='/') Logout
+    #account-form-container
+        h2 Thread Messages:
+        p Reply to Threads
+        - JSON.parse(messages).forEach(function(message) {
+            form(action='/newReplyMessage', method='post')
+                input(type='hidden',name='user', value=user)
+                label.radio
+                    input(type="hidden", name="threadId", value=message.thread_id)
+                    input(type="hidden", name="receiverList", value=message.sender_id)
+                    =message.message
+                    p.subheading @
+                    =message.date_created
+                    input(type='submit', value='See Conversation')
+        - });
+        input(type='button', value='Back',onClick="history.go(-1);return true;")

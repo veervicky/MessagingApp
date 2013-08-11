@@ -1,0 +1,15 @@
+extends layout
+block content
+    #navBar
+        ul
+            li: a(href='/') Logout
+    h4 #{message}
+    #account-form-container
+        h2 Welcome #{JSON.parse(user).user_name}
+        form(action= "/createMessage", method="post")
+            input(type='hidden',name='user', value=user)
+            button(type='submit')#btn-login.btn.btn-primary Create Message
+        form(action= "/showMessage", method="post")
+            input(type='hidden',name='user', value=user)
+            input(type='hidden',name='messages', value=messages)
+            button(type='submit')#btn-login.btn.btn-primary Read Messages

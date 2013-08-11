@@ -1,0 +1,7 @@
+apt-get install nodejs
+curl https://npmjs.org/install.sh | sh
+# npm install mysql
+Download intellij idea plugin for node.js
+Create new project using express option in intellij
+Create app.js
+Run app.js

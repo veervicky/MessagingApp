@@ -1,0 +1,22 @@
+extends layout
+block content
+    #navBar
+        ul
+            li: a(href='/') Logout
+    #login-container
+        h4 #{message}
+        h3 Start a new conversation:
+            form(name='send-message',action='/addMessage', method='post',onsubmit="return validateMessage();")
+                input(type='hidden',name='user', value=user)
+                p Enter The Message
+                input(type="textbox",name="message").well.span6
+                p Choose Member Users:
+                - JSON.parse(userList).forEach(function(userObject) {
+                        label.checkbox
+                            input(type="checkbox", name="receiverList", checked=check, value=userObject.user_id)
+                            =userObject.login_name
+                    - });
+                input(type='submit', value='Send Message')
+                input(type='button', value='Back',onClick="history.go(-1);return true;")
+block scripts
+     script(src='/javascripts/MessageValidator.js')

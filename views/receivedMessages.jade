@@ -1,0 +1,25 @@
+extends layout
+block content
+    #navBar
+        ul
+            li: a(href='/') Logout
+    #account-form-container
+        h2 Received Messages:
+            p Reply to Message
+            form(name='send-message', action='/addMessage', method='post',onsubmit="return validateMessage();")
+                - JSON.parse(messages).forEach(function(message) {
+                    label.radio
+                        #input(type="radio", name="receiverList",check='true', value=message.sender_id)
+                        =message.message
+                        p.subheading @
+                        =message.date_created
+                - });
+                input(type='hidden',name='user', value=user)
+                input(type='hidden',name='receiverList', value=(JSON.parse(messages))[0].sender_id)
+                input(type='hidden',name='threadId', value=threadId)
+                p Enter The Message
+                input(type="textbox",name="message").well.span6
+                input(type='submit', value='Reply Back')
+                input(type='button', value='Back to Threads',onClick="history.go(-1);return true;")
+block scripts
+     script(src='/javascripts/MessageValidator.js')

@@ -1,0 +1,22 @@
+extends layout
+block content
+    h4 #{message}
+        #login-container
+            form(action= "/login", method="post")#login-form.well.span4
+                h1 Member Login!!
+                p.subheading Please Login To Your Account
+                label Username
+                input(type="text", name="user", id='user-tf').span4.required
+                label Password
+                input(type="password", name="pass", id='pass-tf').span4.required
+                button(type="submit")#btn-login.btn.btn-primary
+                    i.icon-lock.icon-white
+                    | Sign in
+                label#remember-me.checkbox Remember Me
+                    input(type="checkbox", checked='checked')
+                div.clear-fix
+                    h4 #{errorMessage}
+                hr
+                div.btm-links
+                p.subheading New to this website...??
+                    a(href='/signup')#create-account Create An Account
