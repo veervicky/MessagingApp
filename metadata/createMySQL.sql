@@ -25,9 +25,12 @@ CREATE TABLE `message` (
 
 CREATE TABLE `message_receiver` (
   `id` varchar(24) NOT NULL DEFAULT '',
+  `message_id` varchar(24) NOT NULL DEFAULT '',
   `receiver_id` varchar(24) NOT NULL DEFAULT '',
   `thread_id` varchar(24) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `ForeignKey` (`receiver_id`),
+  KEY `ForeignKeyMessages` (`message_id`),
+  CONSTRAINT `ForeignKeyMessages` FOREIGN KEY (`message_id`) REFERENCES `message` (`id`),
   CONSTRAINT `ForeignKey` FOREIGN KEY (`receiver_id`) REFERENCES `user_login` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -60,7 +60,7 @@ app.post('/addMessage', function(request, response){
 
 app.post('/showMessage', function(request, response){
     //console.log(request.body);
-    messages.showReceived(request,response);
+    messages.showMessagesReceived(request,response);
 });
 
 app.post('/newReplyMessage', function(request, response){

@@ -16,7 +16,7 @@ block content
                             input(type="checkbox", name="receiverList", checked=check, value=userObject.user_id)
                             =userObject.login_name
                     - });
-                input(type='submit', value='Send Message')
-                input(type='button', value='Back',onClick="history.go(-1);return true;")
+                input(type='button', value='Back',onClick="history.go(-1);return true;")#btn-login.btn.btn
+                input(type='submit', value='Send Message')#btn-login.btn.btn-primary
 block scripts
      script(src='/javascripts/MessageValidator.js')

@@ -40,11 +40,34 @@ exports.showReceived = function (req, res) {
     });
 };
 
+exports.showMessagesReceived = function (req, res) {
+    var userObject = JSON.parse(req.body.user);
+    var userId = JSON.stringify(userObject.user_id);
+    //console.log(userId);
+    dbManager.getMessageIds(req, res, userId, function (messageIds) {
+        //console.log(messageIds);
+        if (messageIds) {
+            var messageIdArray = new Array();
+            for (messageIdIndex in messageIds) {
+                messageIdArray.push("'" + messageIds[messageIdIndex].message_id + "'");
+            }
+            //console.log(threadIds);
+            dbManager.getMessagesUsingMessageIds(messageIdArray, req, res, function (messages) {
+                res.render("threadMessages", {user: req.body.user, messages: JSON.stringify(messages)});
+            });
+        } else {
+            res.render("home", {user: req.body.user, message: "You have no messages"});
+
+        }
+
+    });
+};
+
 exports.showThread = function (req, res) {
     dbManager.getThreadMessages(req.body.threadId, function (messages) {
         //console.log(messages);
         if (!(messages == null)) {
-            res.render("receivedMessages", {user: req.body.user, messages: JSON.stringify(messages),threadId: req.body.threadId});
+            res.render("receivedMessages", {user: req.body.user, messages: JSON.stringify(messages), threadId: req.body.threadId});
             //res.render(messages);
         } else {
             res.send("Message Reception failed");
@@ -52,8 +75,34 @@ exports.showThread = function (req, res) {
     });
 };
 
+exports.showRestrictedThread = function (req, res) {
+    var userObject = JSON.parse(req.body.user);
+    var userId = JSON.stringify(userObject.user_id);
+    dbManager.getMessageIds(req, res, userId, function (messageIds) {
+        console.log(messageIds);
+        if (messageIds) {
+            var messageIdsArray = new Array();
+            for (messageIdIndex in messageIds) {
+                messageIdsArray.push("'" + messageIds[messageIdIndex].message_id + "'");
+            }
+            dbManager.getRestrictedThreadMessages(messageIdsArray, req.body.threadId, function (messages) {
+                if (!(messages == null)) {
+                    res.render("receivedMessages", {user: req.body.user, messages: JSON.stringify(messages), threadId: req.body.threadId});
+                    //res.render(messages);
+                } else {
+                    res.send("Message Reception failed");
+                }
+            });
+        } else {
+            res.send("Message Reception failed");
+        }
+    });
+}
+
+
 exports.createNewMessage = function (req, res) {
-    dbManager.getUsers(function (users) {
+    var userObject = JSON.parse(req.body.user);
+    dbManager.getOtherUsers(userObject.user_id,function (users) {
         res.render('sendMessage', {userList: JSON.stringify(users), user: req.body.user});
     });
 }
@@ -64,7 +113,7 @@ exports.testShowReceived = function (req, res) {
 
 exports.showUsingThreadId = function (req, res) {
     //console.log(req.body);
-    messages.showThread(req, res);
+    messages.showRestrictedThread(req, res);
 };
 
 exports.test = function (req, res) {

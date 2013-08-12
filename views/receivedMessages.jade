@@ -19,7 +19,7 @@ block content
                 input(type='hidden',name='threadId', value=threadId)
                 p Enter The Message
                 input(type="textbox",name="message").well.span6
-                input(type='submit', value='Reply Back')
-                input(type='button', value='Back to Threads',onClick="history.go(-1);return true;")
+                input(type='button', value='Back to Threads',onClick="history.go(-1);return true;")#btn-login.btn.btn
+                input(type='submit', value='Reply Back')#btn-login.btn.btn-primary
 block scripts
      script(src='/javascripts/MessageValidator.js')
