@@ -11,10 +11,11 @@ var messages = require('../routes/messages');
 exports.add = function (request, res) {
     var newMessage = new Object();
     newMessage.userId = JSON.parse(request.body.user).user_id;
+    newMessage.userName = JSON.parse(request.body.user).user_name;
     newMessage.message = request.body.message;
     newMessage.receiverList = request.body.receiverList;
     newMessage.threadId = request.body.threadId;
-    dbManager.addMessage(newMessage.userId, newMessage.message, newMessage.receiverList, newMessage.threadId, request, res);
+    dbManager.addMessage(newMessage.userId, newMessage.message, newMessage.receiverList, newMessage.threadId, newMessage.userName, request, res);
 };
 
 exports.showReceived = function (req, res) {
@@ -79,7 +80,7 @@ exports.showRestrictedThread = function (req, res) {
     var userObject = JSON.parse(req.body.user);
     var userId = JSON.stringify(userObject.user_id);
     dbManager.getMessageIds(req, res, userId, function (messageIds) {
-        console.log(messageIds);
+        //console.log(messageIds);
         if (messageIds) {
             var messageIdsArray = new Array();
             for (messageIdIndex in messageIds) {

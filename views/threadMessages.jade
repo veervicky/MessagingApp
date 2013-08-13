@@ -9,12 +9,12 @@ block content
         - JSON.parse(messages).forEach(function(message) {
             form(action='/newReplyMessage', method='post')
                 input(type='hidden',name='user', value=user)
-                label.radio
-                    input(type="hidden", name="threadId", value=message.thread_id)
-                    input(type="hidden", name="receiverList", value=message.sender_id)
-                    =message.message
-                    p.subheading @
-                    =message.date_created
-                    input(type='submit', value='See Conversation')
+                input(type="hidden", name="threadId", value=message.thread_id)
+                p.subheading From: #{message.sender_name}
+                input(type="hidden", name="receiverList", value=message.sender_id)
+                =message.message
+                p.subheading @ #{message.date_created}
+                hr
+                input(type='submit', value='See Conversation')
         - });
         input(type='button', value='Back',onClick="history.go(-1);return true;")#btn-login.btn.btn

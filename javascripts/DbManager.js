@@ -38,6 +38,24 @@ exports.getUsers = function (callback) {
     });
 }
 
+exports.getOtherUsers = function (userOwnId,callback) {
+    client.query("select user_id, login_name, user_name from user_login where user_id != ?",[userOwnId], function (err, details) {
+        if (!err) {
+            //console.log(details);
+            if (!(details == null)) {
+                callback(details);
+            } else {
+                callback(null);
+            }
+        }
+        else {
+            console.log("ERROR in getUsers");
+            callback(null);
+            //res.send(err.message);
+        }
+    });
+}
+
 exports.addUser = function (loginName, password, userName, emailId, res, callback) {
     var userId = Math.uuid(24);
     //console.log(userId);
@@ -58,7 +76,7 @@ exports.addUser = function (loginName, password, userName, emailId, res, callbac
     });
 }
 
-exports.addMessage = function (userId, message, receiverList, threadId, request, res) {
+exports.addMessage = function (userId, message, receiverList, threadId, userName, request, res) {
     var messageId = Math.uuid(24);
     if (threadId == null) {
         var threadId = Math.uuid(24);
@@ -70,13 +88,14 @@ exports.addMessage = function (userId, message, receiverList, threadId, request,
     }
     var timestampNow = new Date();
     //console.log(timestampNow);
-    client.query("insert into message values(?,?,?,?,?)", [messageId, userId, threadId, message, timestampNow], function (err, details) {
+    client.query("insert into message values(?,?,?,?,?,?)", [messageId, userId, userName, threadId, message, timestampNow], function (err, details) {
         if (!err) {
             if (!(details == null)) {
+                receiverList.push(userId);
                 for (var index in receiverList) {
                     var uuid = Math.uuid(24);
                     //console.log(receiverList[index]);
-                    client.query("insert into message_receiver values(?,?,?)", [uuid, receiverList[index], threadId], function (err, detail) {
+                    client.query("insert into message_receiver values(?,?,?,?)", [uuid, messageId, receiverList[index], threadId], function (err, detail) {
                         if (!(detail == null)) {
                             //callback("success");
                             res.render('home', {user: request.body.user, message: "Message added successfully"});
@@ -136,10 +155,51 @@ exports.getMessages = function (threadIdArray, req, res, callback) {
         }
     });
 }
+exports.getMessagesUsingMessageIds = function (messageIdArray, req, res, callback) {
+    var messageIdString = messageIdArray.toString();
+    //console.log(threadIdString);
+    client.query("select * from message where id in(" + messageIdString + ") group by thread_id order by date_created", function (err, details) {
+        if (!err) {
+            //console.log(details);
+            if (!(details[0] == null)) {
+                callback(details)
+            } else {
+                callback(null)
+                //return null;
+            }
+        }
+        else {
+            console.log("ERROR in getMessages" + err);
+            callback(null);
+            //res.send(err.message);
+        }
+    });
+}
 
 exports.getThreadMessages = function (threadId, callback) {
     //console.log(threadId);
     client.query("select * from message where thread_id =? order by date_created", [threadId], function (err, details) {
+        if (!err) {
+            //console.log(details);
+            if (!(details[0] == null)) {
+                callback(details)
+            } else {
+                callback(null)
+                //return null;
+            }
+        }
+        else {
+            console.log("ERROR in getMessages" + err);
+            callback(null);
+            //res.send(err.message);
+        }
+    });
+}
+
+exports.getRestrictedThreadMessages = function (messageIdArray,threadId, callback) {
+    var messageIdString = messageIdArray.toString();
+    //console.log(messageIdString);
+    client.query("select * from message where thread_id =? and id in(" + messageIdString + ") order by date_created", [threadId], function (err, details) {
         if (!err) {
             //console.log(details);
             if (!(details[0] == null)) {
@@ -169,6 +229,24 @@ exports.getThreadIds = function (req, res, userId, callback) {
         }
         else {
             console.log("ERROR in getThreadIds");
+            callback(null);
+            //res.send(err.message);
+        }
+    });
+}
+
+exports.getMessageIds = function (req, res, userId, callback) {
+    client.query("select message_id from message_receiver where receiver_id = " + userId, function (err, details) {
+        if (!err) {
+            //console.log(details);
+            if (!(details[0] == null)) {
+                callback(details);
+            } else {
+                callback(null);
+            }
+        }
+        else {
+            console.log("ERROR in getMessageIds");
             callback(null);
             //res.send(err.message);
         }

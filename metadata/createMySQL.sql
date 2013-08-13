@@ -17,6 +17,7 @@ DROP TABLE  if exists message;
 CREATE TABLE `message` (
   `id` varchar(24) NOT NULL DEFAULT '',
   `sender_id` varchar(24) NOT NULL DEFAULT '',
+  `sender_name` varchar(50) NOT NULL DEFAULT '',
   `thread_id` varchar(24) NOT NULL DEFAULT '',
   `message` text NOT NULL,
   `date_created` datetime NOT NULL,
